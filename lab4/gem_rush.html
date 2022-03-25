@@ -1,55 +1,72 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Collect the Gems!</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P" rel="stylesheet">
     <style>
-    body {
-        font-family: "Press Start 2P", sans-serif;
-    }
-    #game-container {
-        position: relative;
-    }
-    canvas, #counter, #game-start, #game-over {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-    }
-    canvas, #game-start, #game-over {
-        border: 1px solid gray;
-        width: 854px;
-        height: 480px;
-    }
-    canvas {
-        background: url(background.png);
-        background-size: cover;
-    }
-    #game-start, #game-over {
-        background: rgba(1, 1, 1, 0.8);
-    }
-    #counter text {
-        font-size: 130%;
-        fill: white;
-        stroke: black;
-        stroke-width: 1px;
-    }
-    #game-start text {
-        font-size: 150%;
-        fill: white;
-        text-anchor: middle;
-    }
-    #game-start #game-title {
-        font-size: 400%;
-        fill: url(#title-fill);
-        stroke: black;
-    }
-    #game-over text {
-        font-size: 120%;
-        fill: url(#game-over-fill);
-        text-anchor: middle;
-    }
+        body {
+            font-family: "Press Start 2P", sans-serif;
+        }
+
+        #game-container {
+            position: relative;
+        }
+
+        canvas,
+        #counter,
+        #game-start,
+        #game-over {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        canvas,
+        #game-start,
+        #game-over {
+            border: 1px solid gray;
+            width: 854px;
+            height: 480px;
+        }
+
+        canvas {
+            background: url(background.png);
+            background-size: cover;
+        }
+
+        #game-start,
+        #game-over {
+            background: rgba(1, 1, 1, 0.8);
+        }
+
+        #counter text {
+            font-size: 130%;
+            fill: white;
+            stroke: black;
+            stroke-width: 1px;
+        }
+
+        #game-start text {
+            font-size: 150%;
+            fill: white;
+            text-anchor: middle;
+        }
+
+        #game-start #game-title {
+            font-size: 400%;
+            fill: url(#title-fill);
+            stroke: black;
+        }
+
+        #game-over text {
+            font-size: 120%;
+            fill: url(#game-over-fill);
+            text-anchor: middle;
+        }
     </style>
 </head>
+
 <body>
     <div id="game-container">
         <canvas width="854px" height="480px"></canvas>
@@ -95,93 +112,94 @@
     <script src="player.js"></script>
     <script src="gem.js"></script>
     <script>
-    $(document).ready(function() {
-        /* Get the canvas and 2D context */
-        const cv = $("canvas").get(0);
-        const context = cv.getContext("2d");
+        $(document).ready(function () {
+            /* Get the canvas and 2D context */
+            const cv = $("canvas").get(0);
+            const context = cv.getContext("2d");
 
-        /* Create the sounds */
-        const sounds = {
-            background: new Audio("background.mp3"),
-            collect: new Audio("collect.mp3"),
-            gameover: new Audio("gameover.mp3")
-        };
+            /* Create the sounds */
+            const sounds = {
+                background: new Audio("background.mp3"),
+                collect: new Audio("collect.mp3"),
+                gameover: new Audio("gameover.mp3")
+            };
 
-        const totalGameTime = 20;   // Total game time in seconds
-        const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
-        let gameStartTime = 0;      // The timestamp when the game starts
-        let collectedGems = 0;      // The number of gems collected in the game
+            const totalGameTime = 20;   // Total game time in seconds
+            const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
+            let gameStartTime = 0;      // The timestamp when the game starts
+            let collectedGems = 0;      // The number of gems collected in the game
 
-        /* Create the game area */
-        const gameArea = BoundingBox(context, 165, 60, 420, 800);
+            /* Create the game area */
+            const gameArea = BoundingBox(context, 165, 60, 420, 800);
 
-        /* Create the sprites in the game */
-        const player = Player(context, 427, 240, gameArea); // The player
-        const gem = Gem(context, 427, 350, "green");        // The gem
+            /* Create the sprites in the game */
+            const player = Player(context, 427, 240, gameArea); // The player
+            const gem = Gem(context, 427, 350, "green");        // The gem
 
-        /* The main processing of the game */
-        function doFrame(now) {
-            if (gameStartTime == 0) gameStartTime = now;
+            /* The main processing of the game */
+            function doFrame(now) {
+                if (gameStartTime == 0) gameStartTime = now;
 
-            /* Update the time remaining */
-            const gameTimeSoFar = now - gameStartTime;
-            const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
-            $("#time-remaining").text(timeRemaining);
-
-
-            /* TODO */
-            /* Handle the game over situation here */
-
-
-            /* Update the sprites */
-            gem.update(now);
-            player.update(now);
-
-
-            /* TODO */
-            /* Randomize the gem and collect the gem here */
-
-
-            /* Clear the screen */
-            context.clearRect(0, 0, cv.width, cv.height);
-
-            /* Draw the sprites */
-            gem.draw();
-            player.draw();
-
-            /* Process the next frame */
-            requestAnimationFrame(doFrame);
-        }
-
-        /* Handle the start of the game */
-        $("#game-start").on("click", function() {
-            /* Hide the start screen */
-            $("#game-start").hide();
-
-            /* Handle the keydown of arrow keys and spacebar */
-            $(document).on("keydown", function(event) {
+                /* Update the time remaining */
+                const gameTimeSoFar = now - gameStartTime;
+                const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+                $("#time-remaining").text(timeRemaining);
 
 
                 /* TODO */
-                /* Handle the key down */
+                /* Handle the game over situation here */
 
 
-            });
-
-            /* Handle the keyup of arrow keys and spacebar */
-            $(document).on("keyup", function(event) {
+                /* Update the sprites */
+                gem.update(now);
+                player.update(now);
 
 
                 /* TODO */
-                /* Handle the key up */
+                /* Randomize the gem and collect the gem here */
 
 
+                /* Clear the screen */
+                context.clearRect(0, 0, cv.width, cv.height);
+
+                /* Draw the sprites */
+                gem.draw();
+                player.draw();
+
+                /* Process the next frame */
+                requestAnimationFrame(doFrame);
+            }
+
+            /* Handle the start of the game */
+            $("#game-start").on("click", function () {
+                /* Hide the start screen */
+                $("#game-start").hide();
+
+                /* Handle the keydown of arrow keys and spacebar */
+                $(document).on("keydown", function (event) {
+
+
+                    /* TODO */
+                    /* Handle the key down */
+
+
+                });
+
+                /* Handle the keyup of arrow keys and spacebar */
+                $(document).on("keyup", function (event) {
+
+
+                    /* TODO */
+                    /* Handle the key up */
+
+
+                });
+
+                /* Start the game */
+                requestAnimationFrame(doFrame);
             });
-
-            /* Start the game */
-            requestAnimationFrame(doFrame);
         });
-    });
     </script>
 </body>
+
 </html>
