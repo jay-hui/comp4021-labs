@@ -139,11 +139,15 @@ const Sprite = function (ctx, x, y) {
 
         /* TODO */
         /* Replace the following code to draw the sprite correctly */
-        ctx.fillStyle = "red";
-        ctx.globalAlpha = 0.6;
-        ctx.fillRect(parseInt(x - size.width / 2), parseInt(y - size.height / 2),
-            size.width, size.height);
-
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(
+            sheet,
+            sequence.x + index * sequence.width,
+            sequence.y,
+            sequence.width, sequence.height,
+            parseInt(x - size.width / 2), parseInt(y - size.height / 2),
+            size.width, size.height
+        );
 
         /* Restore saved settings */
         ctx.restore();
@@ -167,6 +171,12 @@ const Sprite = function (ctx, x, y) {
 
         /* TODO */
         /* Move to the next sprite when the timing is right */
+        if (time - lastUpdate >= sequence.timing) {
+            if (++index >= sequence.count)
+                index = 0;
+            draw();
+            lastUpdate = time;
+        }
 
 
         return this;
