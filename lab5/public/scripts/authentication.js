@@ -19,21 +19,30 @@ const Authentication = (function () {
         //
         // A. Preparing the user data
         //
-
+        const jsonData = JSON.stringify({ username, password });
         //
         // B. Sending the AJAX request to the server
         //
-
-        //
-        // F. Processing any error returned by the server
-        //
-
-        //
-        // H. Handling the success response from the server
-        //
-
-        // Delete when appropriate
-        if (onError) onError("This function is not yet implemented.");
+        fetch("/signin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: jsonData
+        })
+            .then((res) => res.json())
+            //
+            // J. Handling the success response from the server
+            //
+            .then((json) => {
+                if (json.status = "success") {
+                    user = json.user;
+                    if (onSuccess) onSuccess();
+                }
+                else if (onError) onError(json.error);
+            })
+            //
+            // F. Processing any error returned by the server
+            //
+            .catch((err) => { if (onError) onError(err); });
     };
 
     // This function sends a validate request to the server
@@ -46,17 +55,22 @@ const Authentication = (function () {
         //
         // A. Sending the AJAX request to the server
         //
-
-        //
-        // C. Processing any error returned by the server
-        //
-
-        //
-        // E. Handling the success response from the server
-        //
-
-        // Delete when appropriate
-        if (onError) onError("This function is not yet implemented.");
+        fetch("/validate", { method: "GET" })
+            .then((res) => res.json())
+            //
+            // E. Handling the success response from the server
+            //
+            .then((json) => {
+                if (json.status == "success") {
+                    user = json.user;
+                    if (onSuccess) onSuccess();
+                }
+                else if (onError) onError(json.error);
+            })
+            //
+            // C. Processing any error returned by the server
+            //
+            .catch((err) => { if (onError) onError(err); });
     };
 
     // This function sends a sign-out request to the server
@@ -66,8 +80,13 @@ const Authentication = (function () {
     //                 request fails in this form `onError(error)`
     const signout = function (onSuccess, onError) {
 
-        // Delete when appropriate
-        if (onError) onError("This function is not yet implemented.");
+        fetch("/signout", { method: "GET" })
+            .then((res) => res.json())
+            .then((json) => {
+                if (json.status == "success" && onSuccess) onSuccess();
+                else if (onError) onError(json.error);
+            })
+            .catch((err) => { if (onError) onError(err); });
     };
 
     return { getUser, signin, validate, signout };
