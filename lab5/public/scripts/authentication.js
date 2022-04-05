@@ -33,7 +33,7 @@ const Authentication = (function () {
             // J. Handling the success response from the server
             //
             .then((json) => {
-                if (json.status = "success") {
+                if (json.status == "success") {
                     user = json.user;
                     if (onSuccess) onSuccess();
                 }
