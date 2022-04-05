@@ -27,7 +27,10 @@ const Registration = (function () {
             // J. Handling the success response from the server
             //
             .then((json) => {
-                if (json.status = "success" && onSuccess) onSuccess();
+                if (json.status == "success" && onSuccess) {
+                    console.log('succs');
+                    onSuccess();
+                }
                 else if (onError) onError(json.error);
             })
             //

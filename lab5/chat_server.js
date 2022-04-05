@@ -49,7 +49,7 @@ app.post("/register", (req, res) => {
         return;
     }
     // - username only contains underscores, letters or numbers
-    if (containWordCharsOnly(username)) {
+    if (!containWordCharsOnly(username)) {
         res.json({
             status: "error",
             error: "Username can only contain underscores, letters or numbers."
@@ -71,7 +71,7 @@ app.post("/register", (req, res) => {
     //
     // H. Saving the users.json file
     //
-    fs.writeFileSync("data/users.json", JSON.stringify(users, null, " "))
+    fs.writeFileSync("data/users.json", JSON.stringify(users, null, "\t"));
     //
     // I. Sending a success response to the browser
     //
