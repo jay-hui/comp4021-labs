@@ -59,6 +59,21 @@ const Socket = (function () {
             // Add the message to the chatroom
             ChatPanel.addMessage(message);
         });
+
+        // event listener for typing event broadcast from server
+        socket.on("typing", (user) => {
+
+            // get the typing user from server
+            const typingUser = JSON.parse(user);
+
+            // check whether the typing user is the current user on the client side
+            const currentUser = Authentication.getUser();
+            if (typingUser.username != currentUser.username) {
+
+                // call function in ui
+                ChatPanel.showTyping(typingUser);
+            }
+        })
     };
 
     // This function disconnects the socket from the server
@@ -74,5 +89,14 @@ const Socket = (function () {
         }
     };
 
-    return { getSocket, connect, disconnect, postMessage };
+    // browser wait call from ui
+    const typingMessage = function () {
+        if (socket && socket.connected) {
+
+            //emits "typing" event
+            socket.emit("typing");
+        }
+    }
+
+    return { getSocket, connect, disconnect, postMessage, typingMessage };
 })();

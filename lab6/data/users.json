@@ -13,5 +13,10 @@
         "avatar": "Blowfish",
         "name": "Jay Hui",
         "password": "$2b$10$ezPGYQUPy7sgzzZHYcnaWOoBUNl0kJnvqWqZvp2UobDDiKKAz6D1i"
+    },
+    "anson": {
+        "avatar": "Scorpion",
+        "name": "Anson Yip",
+        "password": "$2b$10$ezPGYQUPy7sgzzZHYcnaWOoBUNl0kJnvqWqZvp2UobDDiKKAz6D1i"
     }
 }

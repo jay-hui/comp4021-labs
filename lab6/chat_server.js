@@ -151,8 +151,96 @@ app.get("/signout", (req, res) => {
 // ***** Please insert your Lab 6 code here *****
 //
 
+// create the socket.io server
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const httpServer = createServer(app);
+const io = new Server(httpServer);
+
+// use the session in the socket.io server
+io.use((socket, next) => {
+    chatSession(socket.request, {}, next);
+})
+
+// a js object storing the online users
+const onlineUsers = {};
+
+io.on("connection", (socket) => {
+
+    // add a new user to the online user list
+    if (socket.request.session.user) {
+        const { username, avatar, name } = socket.request.session.user;
+        onlineUsers[username] = { avatar, name };
+
+        // broadcast the signed-in user
+        io.emit("add user", JSON.stringify(socket.request.session.user));
+    }
+
+    socket.on("disconnect", () => {
+
+        // remove the user from the online user list
+        if (socket.request.session.user) {
+            const { username } = socket.request.session.user;
+            if (onlineUsers[username]) delete onlineUsers[username];
+
+            // broadcast the signed-out user
+            io.emit("remove user", JSON.stringify(socket.request.session.user));
+        }
+    });
+
+    // set up the get users event
+    socket.on("get users", () => {
+
+        // send the online users to the browser
+        socket.emit("users", JSON.stringify(onlineUsers));
+    });
+
+    // set up the get messages event
+    socket.on("get messages", () => {
+
+        // send the chatroom messages to the browser
+        const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json", "utf-8"));
+        socket.emit("messages", JSON.stringify(chatroom));
+    })
+
+    // set up the post message event
+    socket.on("post message", (content) => {
+        if (socket.request.session.user) {
+
+            // create the message object
+            let message = {
+                user: socket.request.session.user,
+                datetime: new Date(),
+                content: content
+            };
+
+            // read the chatroom messages
+            const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json", "utf-8"));
+
+            // add the message to the chatroom
+            chatroom.push(message);
+
+            // write the chatroom messages
+            fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom, null, "\t"));
+
+            // broadcast the new message
+            io.emit("add message", JSON.stringify(message));
+        }
+    });
+
+    // set up the typing event listener for "typing" event from socket.js
+    socket.on("typing", () => {
+        
+        // checks existence of the current user
+        if (socket.request.session.user) {
+
+            // broadcasts the current user in json
+            io.emit("typing", JSON.stringify(socket.request.session.user))
+        }
+    })
+});
 
 // Use a web server to listen at port 8000
-app.listen(8000, () => {
+httpServer.listen(8000, () => {
     console.log("The chat server has started...");
 });

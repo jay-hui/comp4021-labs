@@ -208,7 +208,22 @@ const ChatPanel = (function () {
         for (const message of chatroom) {
             addMessage(message);
         }
+
+        // handle keydown event
+        $("#chat-input").keydown(() => {
+
+            // call function in socket.js to emit "typing" event
+            Socket.typingMessage();
+        });
     };
+
+    // handle call from socket.js with timeout
+    const showTyping = function (user) {
+
+        if ($("#typing").length) return;
+        $(`<div id="typing" style="font-size: 75%; font-style: italic">${user.name} is typing...</div>`).insertAfter($("#chat-area"));
+        setTimeout(() => { $("#typing").remove() }, 3000);
+    }
 
     // This function adds a new message at the end of the chatroom
     const addMessage = function (message) {
@@ -227,7 +242,7 @@ const ChatPanel = (function () {
         chatArea.scrollTop(chatArea[0].scrollHeight);
     };
 
-    return { initialize, update, addMessage };
+    return { initialize, update, addMessage, showTyping };
 })();
 
 const UI = (function () {
